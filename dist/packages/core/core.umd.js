@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('rxjs'), require('rxjs/operators'), require('@agm/core/directives/fit-bounds')) :
-    typeof define === 'function' && define.amd ? define(['exports', '@angular/core', 'rxjs', 'rxjs/operators', '@agm/core/directives/fit-bounds'], factory) :
-    (factory((global.ngmaps = global.ngmaps || {}, global.ngmaps.core = {}),global.ng.core,null,null,null));
-}(this, (function (exports,core,rxjs,operators,fitBounds) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/core'), require('rxjs'), require('rxjs/operators')) :
+    typeof define === 'function' && define.amd ? define(['exports', '@angular/core', 'rxjs', 'rxjs/operators'], factory) :
+    (factory((global.ngmaps = global.ngmaps || {}, global.ngmaps.core = {}),global.ng.core,null,null));
+}(this, (function (exports,core,rxjs,operators) { 'use strict';
 
     var MapsAPILoader = /** @class */ (function () {
         function MapsAPILoader() {
@@ -3232,7 +3232,7 @@
         return [
             AgmMap, AgmMarker, AgmInfoWindow, AgmCircle, AgmRectangle,
             AgmPolygon, AgmPolyline, AgmPolylinePoint, AgmKmlLayer,
-            AgmDataLayer, fitBounds.AgmFitBounds
+            AgmDataLayer, AgmFitBounds
         ];
     }
     /**

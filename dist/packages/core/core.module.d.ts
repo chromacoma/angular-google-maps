@@ -10,7 +10,7 @@ import { AgmPolylinePoint } from './directives/polyline-point';
 import { AgmKmlLayer } from './directives/kml-layer';
 import { AgmDataLayer } from './directives/data-layer';
 import { LazyMapsAPILoaderConfigLiteral } from './services/maps-api-loader/lazy-maps-api-loader';
-import { AgmFitBounds } from '@agm/core/directives/fit-bounds';
+import { AgmFitBounds } from './directives/fit-bounds';
 /**
  * @internal
  */
