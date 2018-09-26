@@ -13,6 +13,7 @@ export declare class PolylineManager {
     setPolylineOptions(line: AgmPolyline, options: {
         [propName: string]: any;
     }): Promise<void>;
+    getPathForPolyline(polyline: AgmPolyline): Promise<Array<any>>;
     deletePolyline(line: AgmPolyline): Promise<void>;
     createEventObservable<T>(eventName: string, line: AgmPolyline): Observable<T>;
 }

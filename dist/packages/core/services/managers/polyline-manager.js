@@ -41,6 +41,11 @@ var PolylineManager = /** @class */ (function () {
     PolylineManager.prototype.setPolylineOptions = function (line, options) {
         return this._polylines.get(line).then(function (l) { l.setOptions(options); });
     };
+    PolylineManager.prototype.getPathForPolyline = function (polyline) {
+        return this._polylines.get(polyline).then(function (polyline) {
+            return polyline.getPath().getArray();
+        });
+    };
     PolylineManager.prototype.deletePolyline = function (line) {
         var _this = this;
         var m = this._polylines.get(line);

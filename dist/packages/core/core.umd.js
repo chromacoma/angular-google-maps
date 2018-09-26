@@ -554,6 +554,11 @@
         PolygonManager.prototype.setPolygonOptions = function (path, options) {
             return this._polygons.get(path).then(function (l) { l.setOptions(options); });
         };
+        PolygonManager.prototype.getPathForPolygon = function (polygon) {
+            return this._polygons.get(polygon).then(function (polygon) {
+                return polygon.getPath().getArray();
+            });
+        };
         PolygonManager.prototype.deletePolygon = function (paths) {
             var _this = this;
             var m = this._polygons.get(paths);
@@ -625,6 +630,11 @@
         };
         PolylineManager.prototype.setPolylineOptions = function (line, options) {
             return this._polylines.get(line).then(function (l) { l.setOptions(options); });
+        };
+        PolylineManager.prototype.getPathForPolyline = function (polyline) {
+            return this._polylines.get(polyline).then(function (polyline) {
+                return polyline.getPath().getArray();
+            });
         };
         PolylineManager.prototype.deletePolyline = function (line) {
             var _this = this;
@@ -2647,6 +2657,10 @@
              */
             this.polyMouseUp = new core.EventEmitter();
             /**
+             * This event is fired whe the Polygon's underlying path is changed
+             */
+            this.pathChanged = new core.EventEmitter();
+            /**
              * This even is fired when the Polygon is right-clicked on.
              */
             this.polyRightClick = new core.EventEmitter();
@@ -2665,6 +2679,10 @@
                 return;
             }
             this._polygonManager.setPolygonOptions(this, this._updatePolygonOptions(changes));
+            this.pathChanged.emit(this.getPolygonPath());
+        };
+        AgmPolygon.prototype.getPolygonPath = function () {
+            return this._polygonManager.getPathForPolygon(this);
         };
         AgmPolygon.prototype._init = function () {
             this._polygonManager.addPolygon(this);
@@ -2690,6 +2708,8 @@
                 var os = _this._polygonManager.createEventObservable(obj.name, _this).subscribe(obj.handler);
                 _this._subscriptions.push(os);
             });
+            var os = this._polygonManager.createEventObservable('mouseup', this).subscribe(function (ev) { return _this.pathChanged.emit(_this.getPolygonPath()); });
+            this._subscriptions.push(os);
         };
         AgmPolygon.prototype._updatePolygonOptions = function (changes) {
             return Object.keys(changes)
@@ -2704,6 +2724,7 @@
         /** @internal */
         AgmPolygon.prototype.ngOnDestroy = function () {
             this._polygonManager.deletePolygon(this);
+            this.pathChanged.emit(this.getPolygonPath());
             // unsubscribe all registered observable subscriptions
             this._subscriptions.forEach(function (s) { return s.unsubscribe(); });
         };
@@ -2744,6 +2765,7 @@
             polyMouseOut: [{ type: core.Output }],
             polyMouseOver: [{ type: core.Output }],
             polyMouseUp: [{ type: core.Output }],
+            pathChanged: [{ type: core.Output }],
             polyRightClick: [{ type: core.Output }]
         };
         return AgmPolygon;
@@ -2880,6 +2902,10 @@
              */
             this.lineMouseUp = new core.EventEmitter();
             /**
+             * This event is fired whe the Polyline's underlying path is changed
+             */
+            this.pathChanged = new core.EventEmitter();
+            /**
              * This even is fired when the Polyline is right-clicked on.
              */
             this.lineRightClick = new core.EventEmitter();
@@ -2913,6 +2939,9 @@
             optionKeys.forEach(function (k) { return options[k] = changes[k].currentValue; });
             this._polylineManager.setPolylineOptions(this, options);
         };
+        AgmPolyline.prototype.getPolylinePath = function () {
+            return this._polylineManager.getPathForPolyline(this);
+        };
         AgmPolyline.prototype._init = function () {
             this._polylineManager.addPolyline(this);
             this._polylineAddedToManager = true;
@@ -2937,6 +2966,8 @@
                 var os = _this._polylineManager.createEventObservable(obj.name, _this).subscribe(obj.handler);
                 _this._subscriptions.push(os);
             });
+            var os = this._polylineManager.createEventObservable('mouseup', this).subscribe(function (ev) { return _this.pathChanged.emit(_this.getPolylinePath()); });
+            this._subscriptions.push(os);
         };
         /** @internal */
         AgmPolyline.prototype._getPoints = function () {
@@ -2950,6 +2981,7 @@
         /** @internal */
         AgmPolyline.prototype.ngOnDestroy = function () {
             this._polylineManager.deletePolyline(this);
+            this.pathChanged.emit(this.getPolylinePath());
             // unsubscribe all registered observable subscriptions
             this._subscriptions.forEach(function (s) { return s.unsubscribe(); });
         };
@@ -2986,6 +3018,7 @@
             lineMouseOut: [{ type: core.Output }],
             lineMouseOver: [{ type: core.Output }],
             lineMouseUp: [{ type: core.Output }],
+            pathChanged: [{ type: core.Output }],
             lineRightClick: [{ type: core.Output }],
             points: [{ type: core.ContentChildren, args: [AgmPolylinePoint,] }]
         };

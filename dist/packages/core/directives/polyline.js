@@ -99,6 +99,10 @@ var AgmPolyline = /** @class */ (function () {
          */
         this.lineMouseUp = new EventEmitter();
         /**
+         * This event is fired whe the Polyline's underlying path is changed
+         */
+        this.pathChanged = new EventEmitter();
+        /**
          * This even is fired when the Polyline is right-clicked on.
          */
         this.lineRightClick = new EventEmitter();
@@ -132,6 +136,9 @@ var AgmPolyline = /** @class */ (function () {
         optionKeys.forEach(function (k) { return options[k] = changes[k].currentValue; });
         this._polylineManager.setPolylineOptions(this, options);
     };
+    AgmPolyline.prototype.getPolylinePath = function () {
+        return this._polylineManager.getPathForPolyline(this);
+    };
     AgmPolyline.prototype._init = function () {
         this._polylineManager.addPolyline(this);
         this._polylineAddedToManager = true;
@@ -156,6 +163,8 @@ var AgmPolyline = /** @class */ (function () {
             var os = _this._polylineManager.createEventObservable(obj.name, _this).subscribe(obj.handler);
             _this._subscriptions.push(os);
         });
+        var os = this._polylineManager.createEventObservable('mouseup', this).subscribe(function (ev) { return _this.pathChanged.emit(_this.getPolylinePath()); });
+        this._subscriptions.push(os);
     };
     /** @internal */
     AgmPolyline.prototype._getPoints = function () {
@@ -169,6 +178,7 @@ var AgmPolyline = /** @class */ (function () {
     /** @internal */
     AgmPolyline.prototype.ngOnDestroy = function () {
         this._polylineManager.deletePolyline(this);
+        this.pathChanged.emit(this.getPolylinePath());
         // unsubscribe all registered observable subscriptions
         this._subscriptions.forEach(function (s) { return s.unsubscribe(); });
     };
@@ -205,6 +215,7 @@ var AgmPolyline = /** @class */ (function () {
         lineMouseOut: [{ type: Output }],
         lineMouseOver: [{ type: Output }],
         lineMouseUp: [{ type: Output }],
+        pathChanged: [{ type: Output }],
         lineRightClick: [{ type: Output }],
         points: [{ type: ContentChildren, args: [AgmPolylinePoint,] }]
     };

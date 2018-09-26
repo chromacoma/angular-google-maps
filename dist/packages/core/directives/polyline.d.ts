@@ -113,6 +113,10 @@ export declare class AgmPolyline implements OnDestroy, OnChanges, AfterContentIn
      */
     lineMouseUp: EventEmitter<PolyMouseEvent>;
     /**
+     * This event is fired whe the Polyline's underlying path is changed
+     */
+    pathChanged: EventEmitter<any>;
+    /**
      * This even is fired when the Polyline is right-clicked on.
      */
     lineRightClick: EventEmitter<PolyMouseEvent>;
@@ -128,6 +132,7 @@ export declare class AgmPolyline implements OnDestroy, OnChanges, AfterContentIn
     /** @internal */
     ngAfterContentInit(): void;
     ngOnChanges(changes: SimpleChanges): any;
+    getPolylinePath(): Promise<Array<any>>;
     private _init();
     private _addEventListeners();
     /** @internal */

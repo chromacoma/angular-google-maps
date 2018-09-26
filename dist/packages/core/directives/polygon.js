@@ -128,6 +128,10 @@ var AgmPolygon = /** @class */ (function () {
          */
         this.polyMouseUp = new EventEmitter();
         /**
+         * This event is fired whe the Polygon's underlying path is changed
+         */
+        this.pathChanged = new EventEmitter();
+        /**
          * This even is fired when the Polygon is right-clicked on.
          */
         this.polyRightClick = new EventEmitter();
@@ -146,6 +150,10 @@ var AgmPolygon = /** @class */ (function () {
             return;
         }
         this._polygonManager.setPolygonOptions(this, this._updatePolygonOptions(changes));
+        this.pathChanged.emit(this.getPolygonPath());
+    };
+    AgmPolygon.prototype.getPolygonPath = function () {
+        return this._polygonManager.getPathForPolygon(this);
     };
     AgmPolygon.prototype._init = function () {
         this._polygonManager.addPolygon(this);
@@ -171,6 +179,8 @@ var AgmPolygon = /** @class */ (function () {
             var os = _this._polygonManager.createEventObservable(obj.name, _this).subscribe(obj.handler);
             _this._subscriptions.push(os);
         });
+        var os = this._polygonManager.createEventObservable('mouseup', this).subscribe(function (ev) { return _this.pathChanged.emit(_this.getPolygonPath()); });
+        this._subscriptions.push(os);
     };
     AgmPolygon.prototype._updatePolygonOptions = function (changes) {
         return Object.keys(changes)
@@ -185,6 +195,7 @@ var AgmPolygon = /** @class */ (function () {
     /** @internal */
     AgmPolygon.prototype.ngOnDestroy = function () {
         this._polygonManager.deletePolygon(this);
+        this.pathChanged.emit(this.getPolygonPath());
         // unsubscribe all registered observable subscriptions
         this._subscriptions.forEach(function (s) { return s.unsubscribe(); });
     };
@@ -225,6 +236,7 @@ var AgmPolygon = /** @class */ (function () {
         polyMouseOut: [{ type: Output }],
         polyMouseOver: [{ type: Output }],
         polyMouseUp: [{ type: Output }],
+        pathChanged: [{ type: Output }],
         polyRightClick: [{ type: Output }]
     };
     return AgmPolygon;

@@ -185,6 +185,11 @@ export class AgmPolygon implements OnDestroy, OnChanges, AfterContentInit {
   @Output() polyMouseUp: EventEmitter<PolyMouseEvent> = new EventEmitter<PolyMouseEvent>();
 
   /**
+   * This event is fired whe the Polygon's underlying path is changed
+   */
+  @Output() pathChanged: EventEmitter<any> = new EventEmitter<any>();
+
+  /**
    * This even is fired when the Polygon is right-clicked on.
    */
   @Output() polyRightClick: EventEmitter<PolyMouseEvent> = new EventEmitter<PolyMouseEvent>();
@@ -215,6 +220,11 @@ export class AgmPolygon implements OnDestroy, OnChanges, AfterContentInit {
     }
 
     this._polygonManager.setPolygonOptions(this, this._updatePolygonOptions(changes));
+    this.pathChanged.emit(this.getPolygonPath());
+  }
+
+  getPolygonPath(): Promise<Array<any>> {
+    return this._polygonManager.getPathForPolygon(this);
   }
 
   private _init() {
@@ -241,6 +251,10 @@ export class AgmPolygon implements OnDestroy, OnChanges, AfterContentInit {
       const os = this._polygonManager.createEventObservable(obj.name, this).subscribe(obj.handler);
       this._subscriptions.push(os);
     });
+
+    const os = this._polygonManager.createEventObservable('mouseup', this).subscribe((ev: Promise<Array<any>>) => this.pathChanged.emit(this.getPolygonPath()));
+    this._subscriptions.push(os);
+
   }
 
   private _updatePolygonOptions(changes: SimpleChanges): PolygonOptions {
@@ -258,6 +272,7 @@ export class AgmPolygon implements OnDestroy, OnChanges, AfterContentInit {
   /** @internal */
   ngOnDestroy() {
     this._polygonManager.deletePolygon(this);
+    this.pathChanged.emit(this.getPolygonPath());
     // unsubscribe all registered observable subscriptions
     this._subscriptions.forEach((s) => s.unsubscribe());
   }

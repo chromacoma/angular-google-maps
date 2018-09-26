@@ -35,6 +35,11 @@ var PolygonManager = /** @class */ (function () {
     PolygonManager.prototype.setPolygonOptions = function (path, options) {
         return this._polygons.get(path).then(function (l) { l.setOptions(options); });
     };
+    PolygonManager.prototype.getPathForPolygon = function (polygon) {
+        return this._polygons.get(polygon).then(function (polygon) {
+            return polygon.getPath().getArray();
+        });
+    };
     PolygonManager.prototype.deletePolygon = function (paths) {
         var _this = this;
         var m = this._polygons.get(paths);

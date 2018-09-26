@@ -12,6 +12,7 @@ export declare class PolygonManager {
     setPolygonOptions(path: AgmPolygon, options: {
         [propName: string]: any;
     }): Promise<void>;
+    getPathForPolygon(polygon: AgmPolygon): Promise<Array<any>>;
     deletePolygon(paths: AgmPolygon): Promise<void>;
     createEventObservable<T>(eventName: string, path: AgmPolygon): Observable<T>;
 }

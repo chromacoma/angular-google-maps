@@ -139,6 +139,11 @@ export class AgmPolyline implements OnDestroy, OnChanges, AfterContentInit {
   @Output() lineMouseUp: EventEmitter<PolyMouseEvent> = new EventEmitter<PolyMouseEvent>();
 
   /**
+   * This event is fired whe the Polyline's underlying path is changed
+   */
+  @Output() pathChanged: EventEmitter<any> = new EventEmitter<any>();
+
+  /**
    * This even is fired when the Polyline is right-clicked on.
    */
   @Output() lineRightClick: EventEmitter<PolyMouseEvent> = new EventEmitter<PolyMouseEvent>();
@@ -189,6 +194,10 @@ export class AgmPolyline implements OnDestroy, OnChanges, AfterContentInit {
     this._polylineManager.setPolylineOptions(this, options);
   }
 
+  getPolylinePath(): Promise<Array<any>> {
+    return this._polylineManager.getPathForPolyline(this);
+  }
+
   private _init() {
     this._polylineManager.addPolyline(this);
     this._polylineAddedToManager = true;
@@ -213,6 +222,10 @@ export class AgmPolyline implements OnDestroy, OnChanges, AfterContentInit {
       const os = this._polylineManager.createEventObservable(obj.name, this).subscribe(obj.handler);
       this._subscriptions.push(os);
     });
+
+    const os = this._polylineManager.createEventObservable('mouseup', this).subscribe((ev: Promise<Array<any>>) => this.pathChanged.emit(this.getPolylinePath()));
+    this._subscriptions.push(os);
+
   }
 
   /** @internal */
@@ -229,6 +242,7 @@ export class AgmPolyline implements OnDestroy, OnChanges, AfterContentInit {
   /** @internal */
   ngOnDestroy() {
     this._polylineManager.deletePolyline(this);
+    this.pathChanged.emit(this.getPolylinePath());
     // unsubscribe all registered observable subscriptions
     this._subscriptions.forEach((s) => s.unsubscribe());
   }
