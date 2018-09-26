@@ -160,6 +160,7 @@ export interface MapOptions {
   zoom?: number;
   minZoom?: number;
   maxZoom?: number;
+  tilt?: number;
   disableDoubleClickZoom?: boolean;
   disableDefaultUI?: boolean;
   scrollwheel?: boolean;

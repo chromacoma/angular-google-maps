@@ -98,6 +98,11 @@ export class AgmMap implements OnChanges, OnInit, OnDestroy {
   @Input() maxZoom: number;
 
   /**
+   * The tilt angle of the map when in 3D satelite view. The default titl is 30.
+   */
+  @Input() tilt: number = 30;
+
+  /**
    * Enables/disables if map is draggable.
    */
   // tslint:disable-next-line:no-input-rename
@@ -266,7 +271,7 @@ export class AgmMap implements OnChanges, OnInit, OnDestroy {
     'disableDoubleClickZoom', 'scrollwheel', 'draggable', 'draggableCursor', 'draggingCursor',
     'keyboardShortcuts', 'zoomControl', 'zoomControlOptions', 'styles', 'streetViewControl',
     'streetViewControlOptions', 'zoom', 'mapTypeControl', 'mapTypeControlOptions', 'minZoom',
-    'maxZoom', 'panControl', 'panControlOptions', 'rotateControl', 'rotateControlOptions',
+    'maxZoom', 'tilt', 'panControl', 'panControlOptions', 'rotateControl', 'rotateControlOptions',
     'fullscreenControl', 'fullscreenControlOptions', 'scaleControl', 'scaleControlOptions',
     'mapTypeId', 'clickableIcons', 'gestureHandling'
   ];
@@ -338,6 +343,7 @@ export class AgmMap implements OnChanges, OnInit, OnDestroy {
       zoom: this.zoom,
       minZoom: this.minZoom,
       maxZoom: this.maxZoom,
+      tilt: this.tilt,
       disableDefaultUI: this.disableDefaultUI,
       disableDoubleClickZoom: this.disableDoubleClickZoom,
       scrollwheel: this.scrollwheel,
