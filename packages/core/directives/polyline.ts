@@ -215,6 +215,7 @@ export class AgmPolyline implements OnDestroy, OnChanges, AfterContentInit {
       {name: 'mousemove', handler: (ev: PolyMouseEvent) => this.lineMouseMove.emit(ev)},
       {name: 'mouseout', handler: (ev: PolyMouseEvent) => this.lineMouseOut.emit(ev)},
       {name: 'mouseover', handler: (ev: PolyMouseEvent) => this.lineMouseOver.emit(ev)},
+      {name: 'mouseup', handler: (ev: Promise<Array<any>>) => this.pathChanged.emit(this.getPolylinePath())},
       {name: 'mouseup', handler: (ev: PolyMouseEvent) => this.lineMouseUp.emit(ev)},
       {name: 'rightclick', handler: (ev: PolyMouseEvent) => this.lineRightClick.emit(ev)},
     ];
@@ -222,10 +223,6 @@ export class AgmPolyline implements OnDestroy, OnChanges, AfterContentInit {
       const os = this._polylineManager.createEventObservable(obj.name, this).subscribe(obj.handler);
       this._subscriptions.push(os);
     });
-
-    const os = this._polylineManager.createEventObservable('mouseup', this).subscribe((ev: Promise<Array<any>>) => this.pathChanged.emit(this.getPolylinePath()));
-    this._subscriptions.push(os);
-
   }
 
   /** @internal */
