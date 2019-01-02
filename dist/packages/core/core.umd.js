@@ -2959,6 +2959,7 @@
                 { name: 'mousemove', handler: function (ev) { return _this.lineMouseMove.emit(ev); } },
                 { name: 'mouseout', handler: function (ev) { return _this.lineMouseOut.emit(ev); } },
                 { name: 'mouseover', handler: function (ev) { return _this.lineMouseOver.emit(ev); } },
+                { name: 'mouseup', handler: function (ev) { return _this.pathChanged.emit(_this.getPolylinePath()); } },
                 { name: 'mouseup', handler: function (ev) { return _this.lineMouseUp.emit(ev); } },
                 { name: 'rightclick', handler: function (ev) { return _this.lineRightClick.emit(ev); } },
             ];
@@ -2966,8 +2967,6 @@
                 var os = _this._polylineManager.createEventObservable(obj.name, _this).subscribe(obj.handler);
                 _this._subscriptions.push(os);
             });
-            var os = this._polylineManager.createEventObservable('mouseup', this).subscribe(function (ev) { return _this.pathChanged.emit(_this.getPolylinePath()); });
-            this._subscriptions.push(os);
         };
         /** @internal */
         AgmPolyline.prototype._getPoints = function () {
